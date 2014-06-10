@@ -32,9 +32,14 @@ This plugin was developed using the [BadgeOS Boilerplate Add-On](https://github.
 
 == Frequently Asked Questions ==
 
-...
 
 == Screenshots ==
+
+1. Settings screen. Options include specifying a different user data field for the Open Badges recipient and setting IssuerOrganisation
+
+2. Screenshot of issued Open Badges Log. Results are tagged for success and failed issues. Failed issuing includes returned error message from Mozilla Backpack
+
+3. Issuing of badges is done using modal Mozilla Issuer API 
 
 
 == Changelog ==
