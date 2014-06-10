@@ -7,11 +7,11 @@ Stable tag: 1.0.0
 License: GNU AGPLv3
 License URI: http://www.gnu.org/licenses/agpl-3.0.html
 
-This add-on to BadgeOS does some pretty great things...
+Issue Mozilla Open Badges directly from your site with this add-on for BadgeOS
 
 == Description ==
 
-This add-on allows you to directly issue Open Badges from your WordPress site. The add-on works with the BadgeOS plugin exposing achievements earned as [Open Badges Assertions](https://github.com/mozilla/openbadges-specification/blob/master/Assertion/latest.md). The add-on integrates with the [Mozilla Issuer API](https://github.com/mozilla/openbadges/blob/development/docs/apis/issuer_api.md) to allow award badges to be pushed to their Mozilla Backpack.
+This add-on allows you to directly issue Open Badges from your WordPress site. The add-on works with the BadgeOS plugin exposing achievements earned as [Open Badges Assertions](https://github.com/mozilla/openbadges-specification/blob/master/Assertion/latest.md). The add-on integrates with the [Mozilla Issuer API](https://github.com/mozilla/openbadges/blob/development/docs/apis/issuer_api.md) to allow award badges to be pushed to their Mozilla Backpack. 
 
 [Get the BadgeOS plugin](http://wordpress.org/extend/plugins/badgeos/ "BadgeOS").
 
