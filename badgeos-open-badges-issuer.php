@@ -51,8 +51,6 @@ class BadgeOS_OpenBadgesIssuer {
 		add_action( 'init', array( $this, 'open_badges_log_post_type' ) );
 		
 		add_action( 'init', array( $this, 'register_scripts_and_styles' ) );
-		
-		add_action('admin_menu', array( $this, 'plugin_menu' ) );
 			
 		add_shortcode( 'badgeos_backpack_push', array(&$this, 'badgeos_backpack_push_shortcode') );
 		add_shortcode( 'badgeos_backpack_registered_email', array(&$this, 'badgeos_backpack_reg_email_shortcode') );
@@ -357,18 +355,6 @@ class BadgeOS_OpenBadgesIssuer {
 			return false;
 
 	} /* meets_requirements() */
-	
-	/**
-	 * Create BadgeOS Settings menus
-	 */
-	function plugin_menu() {
-
-		// Set minimum role setting for menus
-		$minimum_role = $badgeos_settings['minimum_role'];
-		
-		add_submenu_page( 'badgeos_badgeos', __( 'Open Badges Issuer Settings', 'badgeos_obi_issuer' ), __( 'Open Badges Issuer Settings', 'badgeos_obi_issuer' ), $minimum_role, 'open-badges-issuer', array(&$this, 'open_badges_issuer_settings') );
-		add_submenu_page( 'badgeos_badgeos', __( 'Open Badges Issuer Log Entries', 'badgeos_obi_issuer' ), __( 'Open Badges Issuer Log Entries', 'badgeos_obi_issuer' ), $minimum_role, 'edit.php?post_type=open-badge-entry' );
-	}
 	
 	/**
 	 * Potentially output a custom error message and deactivate

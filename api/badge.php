@@ -18,7 +18,7 @@ class JSON_API_Badge_Controller {
 			$email = BadgeOS_OpenBadgesIssuer::registered_email($user_id);
 			$post_type = get_post_type( $post_id );
 			
-			if ($post_type === "submission" && get_option( 'open_badges_issuer_public_evidence')) {
+			if ($post_type === "submission" && get_option( 'badgeos_obi_issuer_public_evidence')) {
 				$achievement_id = get_post_meta( $post_id, '_badgeos_submission_achievement_id', true );
 				$assertion['evidence'] = get_permalink( $post_id );
 			} else {
@@ -57,9 +57,24 @@ class JSON_API_Badge_Controller {
 		}
 	}
 	public function issuer() {
-		return array ( "name" => get_bloginfo( 'name', 'display' ),
-					   "url" =>  site_url());
+		$issuerFields = array('description',
+							  'image',
+							  'email',
+							  'revocationList');
+		
+		$issuer = array("name" => get_option( 'badgeos_obi_issuer_org_name') ?: get_bloginfo( 'name', 'display' ),
+						"url" =>  get_option( 'badgeos_obi_issuer_org_url') ?: site_url());
+		
+		foreach($issuerFields as $field){
+			$val = get_option( 'badgeos_obi_issuer_org_'.$field);
+			if (!empty($val)){
+				$issuer[$field] = $val;	
+			}
+		}
+		
+		return $issuer;
 	}
+	
 	
 	public function achievements() {
 		global $blog_id, $json_api;
