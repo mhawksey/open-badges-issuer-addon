@@ -1,7 +1,7 @@
 <?php
 /*
-Controller name: Open Badges Generator
-Controller description: BadgeOS(tm) Open Badges Issuer API assertion generator
+Controller name: Mozilla Open Badges Generator
+Controller description: Generates Mozilla Open Badges compatible Assertions for the BadgeOS plugin
 */
 class JSON_API_Badge_Controller {
 	public function assertion() {

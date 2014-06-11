@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: BadgeOS Open Badges Issuer
- * Description: This BadgeOS add-on allows users to push awarded badges directly to Mozilla Open Badges Backpack using the Issuer API
+ * Plugin Name: Open Badges Issuer Add-on
+ * Description: This is a BadgeOS add-on which allows you to host Mozilla Open Badges compatible assertions and allow users to push awarded badges directly to their Mozilla  Backpack
  * Author: mhawksey
  * Version: 1.0.0
  * Author URI: https://mashe.hawksey.info/
@@ -21,7 +21,8 @@
  * @since 1.0.0
  */
 class BadgeOS_OpenBadgesIssuer {
-
+	public $depend = array('BadgeOS' => 'http://wordpress.org/plugins/badgeos/',
+							'JSON_API' => 'http://wordpress.org/plugins/json-api/');
 	/**
 	 * Get everything running.
 	 *
@@ -77,10 +78,6 @@ class BadgeOS_OpenBadgesIssuer {
 
 		// If BadgeOS is available...
 		if ( $this->meets_requirements() ) {
-
-			if (!class_exists('JSON_API')){
-			   require_once(sprintf("%s/lib/json-api/json-api.php", $this->directory_path));
-			}
 			// add custom JSON API controllers
 			add_filter('json_api_controllers', array(&$this,'add_badge_controller'));
 			add_filter('json_api_badge_controller_path', array(&$this,'set_badge_controller_path'));
@@ -101,9 +98,7 @@ class BadgeOS_OpenBadgesIssuer {
 	 *
 	 * @since 1.0.0
 	 */
-	function open_badges_log_post_type(){
-		
-		
+	function open_badges_log_post_type(){	
 		// Register Log Entries CPT
 		register_post_type( 'open-badge-entry', array(
 			'labels'             => array(
@@ -349,7 +344,7 @@ class BadgeOS_OpenBadgesIssuer {
 	 */
 	public static function meets_requirements() {
 
-		if ( class_exists('BadgeOS') )
+		if ( class_exists('BadgeOS') && class_exists('JSON_API'))
 			return true;
 		else
 			return false;
@@ -369,7 +364,12 @@ class BadgeOS_OpenBadgesIssuer {
 		if ( ! $this->meets_requirements() ) {
 			// Display our error
 			echo '<div id="message" class="error">';
-			echo '<p>' . sprintf( __( 'BadgeOS Add-On requires BadgeOS and has been <a href="%s">deactivated</a>. Please install and activate BadgeOS and then reactivate this plugin.', 'obissuer' ), admin_url( 'plugins.php' ) ) . '</p>';
+			foreach ($this->depend as $class => $url){ 
+				if ( !class_exists($class)) {
+					$extra = sprintf('<a href="%s">%s</a>', $url, $class); 
+					echo '<p>' . sprintf( __( 'Open Badges Issuer requires %s and has been <a href="%s">deactivated</a>. Please install and activate %s and then reactivate this plugin.', 'obissuer' ),  $extra, admin_url( 'plugins.php' ), $extra ) . '</p>';
+				}
+			}
 			echo '</div>';
 
 			// Deactivate our plugin

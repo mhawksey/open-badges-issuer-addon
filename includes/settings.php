@@ -27,7 +27,8 @@ class BadgeOS_OpenBadgesIssuer_Settings {
 		?>
 		<div class="wrap">
         	<?php settings_errors(); ?>
-            <h2>Open Badges Issuer Settings</h2>
+            <?php $this->json_api_controller_status(); ?>
+            <h2>Open Badges Issuer Add-on Settings</h2>
             <form method="post" action="options.php"> 
                 <?php @settings_fields('badgeos_obi_issuer_settings'); ?>
                 <?php @do_settings_fields('badgeos_obi_issuer_settings'); ?>
@@ -40,11 +41,20 @@ class BadgeOS_OpenBadgesIssuer_Settings {
         <?php
 	}
 	
+	function json_api_controller_status(){
+		$json_api_controllers = explode(",", get_option( 'json_api_controllers' ));
+		if(!in_array('badge',$json_api_controllers)){	
+			echo '<div id="message" class="error">';
+			echo '<p>' . sprintf( __( 'Open Badges Issuer requires the JSON API Mozilla Open Badges Generator to be active. Please <a href="">activate in JSON API settings</a>', 'obissuer' ),  admin_url( 'options-general.php?page=json-api' ) ) . '</p>';
+			echo '</div>';
+		}
+	}
+	
 	public function badgeos_obi_issuer_settings_section_about()
 	{
 		?>
         <p>This plugin extends BadgeOS to allow you to host and issue Open Badges compatible assertions. This means 
-        users can directly add awarded badges to their Mozilla Backpack. To enable users to send create a new page and 
+        users can directly add BadgeOS awarded badges to their Mozilla Backpack. To enable users to send create a new page and 
         include the shortcode <code>[badgeos_backpack_push]</code>.</p> 
 
 		<p>If you are a developer and would like to support the development of this plugin issues and contributions can 

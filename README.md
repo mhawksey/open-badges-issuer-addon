@@ -1,4 +1,4 @@
-About BadgeOS Open Badges Issuer Add-on
+About Open Badges Issuer Add-on
 ============
 This add-on exists to allow you to directly issue Open Badges from your WordPress site. The add-on works with the BadgeOS plugin exposing achievements earned as [Open Badges Assertions](https://github.com/mozilla/openbadges-specification/blob/master/Assertion/latest.md). The add-on integrates with the [Mozilla Issuer API](https://github.com/mozilla/openbadges/blob/development/docs/apis/issuer_api.md) to allow award badges to be pushed to their Mozilla Backpack.
 
@@ -10,3 +10,4 @@ This plugin was developed using the [BadgeOS Boilerplate Add-On](https://github.
 * [BadgeOS.org](http://badgeos.org/ "BadgeOS web site") - Contact Us, Video Tutorials, Examples, News
 * [Credly.com](https://credly.com/ "Credly web site") - Manage lifelong credentials that matter
 * [BadgeOS on GitHub](https://github.com/opencredit/badgeos "BadgeOS on GitHub") - Report issues, contribute code
+* [Mozilla Open Badges](http://www.openbadges.org/) - Read more about Mozilla Open Badges
