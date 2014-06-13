@@ -2,7 +2,7 @@
 This add-on exists to allow you to directly issue Open Badges from your WordPress site. The add-on works with the BadgeOS plugin exposing achievements earned as [Open Badges Assertions](https://github.com/mozilla/openbadges-specification/blob/master/Assertion/latest.md). The add-on integrates with the [Mozilla Issuer API](https://github.com/mozilla/openbadges/blob/development/docs/apis/issuer_api.md) to allow award badges to be pushed to their Mozilla Backpack.
 
 ## Usage notes
-When setting achievement images in BadgeOS upload these as .png. This is a requirement of the Open Badges assertion specification. Basic instructions to give to users for converting digital badges into Open Badges are in [https://docs.google.com/document/d/1eJmev3UePB23Ku0JYTlOc73q6ScoJgC0OW5vC8A1Bws/edit](this commentable Google Doc). 
+When setting achievement images in BadgeOS upload these as .png. This is a requirement of the Open Badges assertion specification. Basic instructions to give to users for converting digital badges into Open Badges are in (this commentable Google Doc)[https://docs.google.com/document/d/1eJmev3UePB23Ku0JYTlOc73q6ScoJgC0OW5vC8A1Bws/edit]. 
 
 # Resources / Helpful Links
 
