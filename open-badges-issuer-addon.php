@@ -57,9 +57,8 @@ class BadgeOS_OpenBadgesIssuer {
 			
 		add_shortcode( 'badgeos_backpack_push', array(&$this, 'badgeos_backpack_push_shortcode') );
 		add_shortcode( 'badgeos_backpack_registered_email', array(&$this, 'badgeos_backpack_reg_email_shortcode') );
-		if (get_option('open_badges_issuer_public_evidence')){
-			add_filter('badgeos_public_submissions', array(&$this, 'set_public_badge_submission'), 999, 1);
-		}
+		
+		add_filter('badgeos_public_submissions', array(&$this, 'set_public_badge_submission'), 999, 1);
 		
 		add_action( 'wp_ajax_open_badges_recorder', array(&$this, 'badgeos_ajax_open_badges_recorder'));
 		add_filter('badgeos_render_achievement', array( $this, 'badgeos_render_openbadge_button'), 11 ,2);
@@ -226,8 +225,7 @@ class BadgeOS_OpenBadgesIssuer {
 	 * @return boolen               submission display
 	 */
 	function set_public_badge_submission($public){
-		$public = true;	
-		return $public;
+		return get_option('badgeos_obi_issuer_public_evidence');
 	}
 	
 	/**
@@ -308,7 +306,7 @@ class BadgeOS_OpenBadgesIssuer {
 	
 	public function registered_email($user_id = 0){
 		$user_id = ($user_id) ? $user_id : get_current_user_id();
-		$email_alt_field = get_option( 'open_badges_issuer_alt_email');
+		$email_alt_field = get_option( 'badgeos_obi_issuer_alt_email');
 		if ($email_alt_field !== "" && get_user_meta( $user_id, $email_alt_field, TRUE) !== ""){
 			return get_user_meta( $user_id, $email_alt_field, TRUE);
 		} else {

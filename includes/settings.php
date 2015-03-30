@@ -189,8 +189,8 @@ class BadgeOS_OpenBadgesIssuer_Settings {
 			'badgeos_obi_issuer_template', 
 			'badgeos_obi_issuer_template-section',
 			array(  'name' => 'badgeos_obi_issuer_public_evidence',
-					'choices' => array( 'yes' => 'Enable',
-										'no' => 'Disable'),
+					'choices' => array( 'true' => 'Enable',
+										'false' => 'Disable'),
 					'description' => __('Enable or Disable public badge evidence for submissions', 'badgeos_obi_issuer'),
 			)
 		);
