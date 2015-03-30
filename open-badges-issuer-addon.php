@@ -3,8 +3,9 @@
  * Plugin Name: Open Badges Issuer Add-on
  * Description: This is a BadgeOS add-on which allows you to host Mozilla Open Badges compatible assertions and allow users to push awarded badges directly to their Mozilla  Backpack
  * Author: mhawksey
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author URI: https://mashe.hawksey.info/
+ * Plugin URI: http://wordpress.org/plugins/badgeos-open-badges-issuer-add-on/
  * Based on BadgeOS Boilerplate Add-On by Credly https://github.com/opencredit/BadgeOS-Boilerplate-Add-on
  * License: GNU AGPLv3
  * License URI: http://www.gnu.org/licenses/agpl-3.0.html
@@ -22,7 +23,7 @@
  */
 class BadgeOS_OpenBadgesIssuer {
 	public $depend = array('BadgeOS' => 'http://wordpress.org/plugins/badgeos/',
-							'JSON_API' => 'http://wordpress.org/plugins/json-api/');
+						   'JSON_API' => 'http://wordpress.org/plugins/json-api/');
 	/**
 	 * Get everything running.
 	 *
@@ -52,6 +53,7 @@ class BadgeOS_OpenBadgesIssuer {
 		add_action( 'init', array( $this, 'open_badges_log_post_type' ) );
 		
 		add_action( 'init', array( $this, 'register_scripts_and_styles' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 			
 		add_shortcode( 'badgeos_backpack_push', array(&$this, 'badgeos_backpack_push_shortcode') );
 		add_shortcode( 'badgeos_backpack_registered_email', array(&$this, 'badgeos_backpack_reg_email_shortcode') );
@@ -60,12 +62,8 @@ class BadgeOS_OpenBadgesIssuer {
 		}
 		
 		add_action( 'wp_ajax_open_badges_recorder', array(&$this, 'badgeos_ajax_open_badges_recorder'));
-		//add_action( 'wp_ajax_open_badges_recorder', 'badgeos_ajax_open_badges_recorder');
-		// not doing it this way as achievement ids are handled differently
-		//add_filter('badgeos_render_achievement', array( $this, 'badgeos_render_openbadge_button'), 10 ,2);
+		add_filter('badgeos_render_achievement', array( $this, 'badgeos_render_openbadge_button'), 11 ,2);
 		
-		
-
 	} /* __construct() */
 
 
@@ -94,6 +92,17 @@ class BadgeOS_OpenBadgesIssuer {
 	} /* includes() */
 	
 	/**
+	 * Register all core scripts and styles
+	 *
+	 * @since  1.1.0
+	 */
+	function register_scripts_and_styles(){
+		wp_register_script( 'badgeos-backpack', $this->directory_url . '/js/badgeos-backpack.js', array( 'jquery' ), '1.1.0', true );
+		wp_register_script( 'mozilla-issuer-api', '//backpack.openbadges.org/issuer.js', array('badgeos-backpack'), null );
+		wp_register_style( 'badgeos-backpack-style', $this->directory_url . '/css/badgeos-backpack.css', null, '1.1.0' );
+	}
+	
+	/**
 	 * Register open badges logging post type
 	 *
 	 * @since 1.0.0
@@ -114,7 +123,7 @@ class BadgeOS_OpenBadgesIssuer {
 				'not_found'          => __( 'No Log Entries found', 'badgeos' ),
 				'not_found_in_trash' => __( 'No Log Entries found in Trash', 'badgeos' ),
 				'parent_item_colon'  => '',
-				'menu_name'          => __( 'Open Badges Issuer Log Entries', 'obissuer' )
+				'menu_name'          => __( 'Open Badges Issuer Log Entries', 'badgeos_obi_issuer' )
 			),
 			'public'             => false,
 			'publicly_queryable' => false,
@@ -147,14 +156,64 @@ class BadgeOS_OpenBadgesIssuer {
 	}
 	
 	/**
+	* Register frontend css/js.
+	*
+	* @since 1.1.0
+	*/
+	function frontend_scripts() {
+		wp_enqueue_script( 'mozilla-issuer-api' );
+		wp_enqueue_script( 'badgeos-backpack' );
+		wp_enqueue_style( 'badgeos-backpack-style' );
+	}
+	
+	/**
 	 * Render an achievement override to include send to Mozilla Backpack
 	 *
-	 * @since  1.0.0
+	 * @since  1.1.0
 	 * @param  string $output The output from the original filter
 	 * @param  integer $achievement The achievement's post ID
 	 * @return string               Concatenated markup
 	 */
-	public function badgeos_render_openbadge_button($achievement = 0) {
+	public function badgeos_render_openbadge_button($output, $achievement = 0) {
+		global $user_ID;
+		
+		// user earned badge
+		$earned = badgeos_get_user_achievements( array( 'user_id' => $user_ID, 'achievement_id' => absint( $achievement ) ) );
+		
+		// handle case of buddypress achievements tab
+		if (function_exists('bp_displayed_user_id') && bp_displayed_user_id() !== 0 && bp_displayed_user_id() !== $user_ID){
+			$earned = false;
+		}
+		
+		// if logged in user has earned badge append send to mozilla button to output
+		if($earned){
+			// for submissions need to convert achievement id into badge uid		
+			$args = array('author' => $user_ID,
+						  'fields' => 'ids',
+						  'post_type' => 'submission',
+						  'meta_query' => array(
+							array(
+								'key'     => '_badgeos_submission_achievement_id',
+								'value'   => $achievement,
+							)),
+						);
+			$badges = get_posts($args);
+			// if no submission fallback onto achievement id
+			$achievement_id = (!empty($badges)) ? $badges[0] : $achievement;
+			//build assertion uri
+			$base_url = site_url().'/'.get_option('json_api_base', 'api').'/badge/assertion/?uid=';
+			$uid = $achievement_id . "-" . get_post_time('U', true, $achievement_id) . "-" . $user_ID;
+			// let user know if already attempted to send badge
+			$pushed_badges = ( $pushed_items = get_user_meta( absint( $user_ID ), '_badgeos_backpack_pushed' ) ) ? (array) $pushed_items : array();
+			$button_text = (!in_array($base_url.$uid, $pushed_badges)) ? __( 'Send to Mozilla Backpack', 'badgeos_obi_issuer' ) : __( 'Resend to Mozilla Backpack', 'badgeos_obi_issuer' ); 
+			// append mozilla backpack button to output
+			$output .= '<div class="badgeos_backpack_action">';
+			$output .= '<a href="" class="badgeos_backpack button" data-uid="'.$base_url.$uid.'">'.$button_text.'</a> ';
+			$output .= '<input type="checkbox" value="'.$base_url.$uid.'" name="badgeos_backpack_issues[]"/>';
+			$output .= '</div>';
+		} else {
+			$output .= '<div class="badgeos_backpack_action"></div>';
+		}
 		return $output;
 	}
 	
@@ -200,20 +259,11 @@ class BadgeOS_OpenBadgesIssuer {
 		
 		wp_send_json_success( array(
 			'successes'     => get_user_meta( $user_id, '_badgeos_backpack_pushed'),
-			'resend_text'	=> __( 'Resend to Mozilla Backpack', 'obissuer' ),
+			'resend_text'	=> __( 'Resend to Mozilla Backpack', 'badgeos_obi_issuer' ),
 		) );
 	}
 	
-	/**
-	 * Register all core scripts and styles
-	 *
-	 * @since  1.3.0
-	 */
-	function register_scripts_and_styles(){
-		wp_register_script( 'badgeos-backpack', $this->directory_url . '/js/badgeos-backpack.js', array( 'jquery' ), '1.0.0', true );
-		wp_register_script( 'mozilla-issuer-api', '//backpack.openbadges.org/issuer.js', array('badgeos-backpack'), null );
-		wp_register_style( 'badgeos-backpack-style', $this->directory_url . '/css/badgeos-backpack.css', null, '1.0.2' );
-	}
+
 	
 	/**
 	 * Achievement List with Backpack Push Short Code
@@ -223,46 +273,22 @@ class BadgeOS_OpenBadgesIssuer {
 	 * @return string 	   The concatinated markup
 	 */
 	function badgeos_backpack_push_shortcode( $atts = array () ){
-	
+		global $user_ID;
 		// check if shortcode has already been run
 		if ( isset( $GLOBALS['badgeos_backpack_push'] ) )
 			return;
 		if ( !is_user_logged_in() ) {
-			return __( 'Please log in to push badges to Mozilla Backpack', 'obissuer' );
+			return __( 'Please log in to push badges to Mozilla Backpack', 'badgeos_obi_issuer' );
 		}
-		global $user_ID;
-		extract( shortcode_atts( array(
-				 'user_id'     => $user_ID,
-		), $atts ) );
-	
-		wp_enqueue_style( 'badgeos-front' );
-		wp_enqueue_script( 'badgeos-achievements' );
-		
-		wp_enqueue_script( 'mozilla-issuer-api' );
-		wp_enqueue_script( 'badgeos-backpack' );
-		wp_enqueue_style( 'badgeos-backpack-style' );
-	
-		$data = array(
-			'ajax_url'    => esc_url( admin_url( 'admin-ajax.php', 'relative' ) ),
-			'json_url'    => esc_url( site_url().'/'.get_option('json_api_base', 'api').'/badge/achievements/' ),
-			'user_id'     => $user_id,
-		);
-		wp_localize_script( 'badgeos-achievements', 'badgeos', $data );
-		
-		$sendall = '<div class="badgeos_backpack_action"><a href="" class="badgeos_backpack_all button">'.__( 'Send selected to Mozilla Backpack', 'obissuer' ).'</a></div>';
-	
-		$badges = null;
-		
-		$badges .= $sendall;
-	
-		$badges .= '<div id="badgeos-achievements-container"></div>';
-	
-		$badges .= '<div class="badgeos-spinner"></div>';
-	
+
+		$output = '<style>.badgeos_backpack_action input[type=checkbox]{display: inline-block;}</style>';
+		$output .= '<div class="badgeos_backpack_action"><a href="" class="badgeos_backpack_all button">'.__( 'Send selected to Mozilla Backpack', 'badgeos_obi_issuer' ).'</a></div>';
+		$output .= do_shortcode('[badgeos_achievements_list limit="10" show_filter="false" show_search="true" orderby="menu_order" order="ASC" wpms="false" user_id="'.$user_ID.'"]');
 		// Save a global to prohibit multiple shortcodes
 		$GLOBALS['badgeos_backpack_push'] = true;
-		return $badges;
+		return $output;
 	}
+	
 	/**
 	 * Achievement List with Backpack Push Short Code
 	 *
@@ -272,7 +298,7 @@ class BadgeOS_OpenBadgesIssuer {
 	 */
 	function badgeos_backpack_reg_email_shortcode( $atts = array () ){
 		if ( !is_user_logged_in() ) {
-			return "<em>".__( 'Please log in to push badges to Mozilla Backpack', 'obissuer' )."</em>";
+			return "<em>".__( 'Please log in to push badges to Mozilla Backpack', 'badgeos_obi_issuer' )."</em>";
 		}
 		extract( shortcode_atts( array(
 				 'user_id'     => $user_ID,
@@ -367,7 +393,7 @@ class BadgeOS_OpenBadgesIssuer {
 			foreach ($this->depend as $class => $url){ 
 				if ( !class_exists($class)) {
 					$extra = sprintf('<a href="%s">%s</a>', $url, $class); 
-					echo '<p>' . sprintf( __( 'Open Badges Issuer requires %s and has been <a href="%s">deactivated</a>. Please install and activate %s and then reactivate this plugin.', 'obissuer' ),  $extra, admin_url( 'plugins.php' ), $extra ) . '</p>';
+					echo '<p>' . sprintf( __( 'Open Badges Issuer requires %s and has been <a href="%s">deactivated</a>. Please install and activate %s and then reactivate this plugin.', 'badgeos_obi_issuer' ),  $extra, admin_url( 'plugins.php' ), $extra ) . '</p>';
 				}
 			}
 			echo '</div>';

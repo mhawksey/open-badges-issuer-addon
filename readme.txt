@@ -1,9 +1,9 @@
-=== BadgeOS Open Badges Issuer Add-on ===
+=== Open Badges Issuer Add-on ===
 Contributors: mhawksey
 Tags: badge, badges, openbadges, credly, OBI, mozilla, open badges, achievement, badgeOS
 Requires at least: 3.5
 Tested up to: 3.9.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GNU AGPLv3
 License URI: http://www.gnu.org/licenses/agpl-3.0.html
 
@@ -27,8 +27,9 @@ This plugin was developed using the [BadgeOS Boilerplate Add-On](https://github.
 
 
 1. First get and activate the free [BadgeOS plugin](http://wordpress.org/extend/plugins/badgeos/ "BadgeOS").
-2. Then upload the 'badgeos-open-badges-issuer' plugin via the 'Plugins' menu in WordPress (or upload to the '/wp-content/plugins/' directory).
-3. Activate the plugin through the 'Plugins' menu in WordPress
+1. Get and activate the free [JSON API plugin](http://wordpress.org/extend/plugins/json-api/ "JSON API").
+1. Then upload the 'badgeos-open-badges-issuer' plugin via the 'Plugins' menu in WordPress (or upload to the '/wp-content/plugins/' directory).
+1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Frequently Asked Questions ==
 
@@ -43,6 +44,13 @@ This plugin was developed using the [BadgeOS Boilerplate Add-On](https://github.
 
 
 == Changelog ==
+
+= 1.1.0 =
+* Integrated 'send to backpack' in all badge listings where user has achieved award
+* Improved [badgeos_backpack_push] shortcode functionality including search option
+
+= 1.0.1 =
+* Fixed missing from menu
 
 = 1.0.0 =
 * Intial release

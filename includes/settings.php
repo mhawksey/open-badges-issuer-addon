@@ -15,8 +15,8 @@ class BadgeOS_OpenBadgesIssuer_Settings {
 	}
 	
 	function badgeos_obi_issuer_settings(){
-		$badgeos_settings = get_option( 'badgeos_settings' );
-		if (!current_user_can($badgeos_settings['minimum_role'])) {
+
+		if (!current_user_can(badgeos_get_manager_capability())) {
 			wp_die("You do not have sufficient permissions to access this page.");
 		}
 		
@@ -197,7 +197,7 @@ class BadgeOS_OpenBadgesIssuer_Settings {
 		
 		add_settings_section(
 			'badgeos_obi_issuer_template-section2', 
-			__('Issuer Organiztion Override', 'badgeos_obi_issuer'), 
+			__('Issuer Organization Override', 'badgeos_obi_issuer'), 
 			array(&$this, 'badgeos_obi_issuer_settings_section_override'), 
 			'badgeos_obi_issuer_template'
 		);

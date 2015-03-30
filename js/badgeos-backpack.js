@@ -31,6 +31,7 @@ jQuery(document).ready(function($){
 	$('.badgeos_backpack').live( 'click', function( event ) {
 		event.preventDefault();
 		$(this).attr("disabled", true);
+		console.log($(this).attr('data-uid'));
 		issueBadges([$(this).attr('data-uid')]);
 		/*OpenBadges.issue([$(this).attr('data-uid')], function(errors, successes) {
 			handle_backpack_response(errors, successes)

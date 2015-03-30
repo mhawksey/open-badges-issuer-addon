@@ -6,6 +6,7 @@ margin: 0 auto;
 padding-bottom: 10px;	
 text-align: right;
 }
+
 .badgeos_backpack_action .button {
 background: #2EA2CC;
 border-color: #0074A2;
@@ -30,7 +31,6 @@ white-space: nowrap;
 -webkit-box-sizing: border-box;
 -moz-box-sizing: border-box;
 box-sizing: border-box;
-
 }
 
 .badgeos_backpack_action .button:hover{
@@ -75,7 +75,8 @@ box-sizing: border-box;
 box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 -webkit-transition: .05s border-color ease-in-out;
 transition: .05s border-color ease-in-out;
-margin-left:13px
+margin-left:13px;
+display:none;
 }
 
 .badgeos_backpack_action input[type=checkbox]:checked:before {
@@ -94,7 +95,7 @@ color: #1E8CBE;
 
 
 .badgeos-achievements-list-item {
-border-bottom:none;	
+border-bottom:none !important;	
 }
 .badgeos-issue-email{
 	font-weight:bold;

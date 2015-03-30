@@ -16,6 +16,9 @@ local.properties
 .settings/
 .loadpath
 
+#Dreamweaver notes
+_notes/
+
 # External tool builders
 .externalToolBuilders/
 
