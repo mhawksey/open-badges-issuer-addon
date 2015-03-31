@@ -96,7 +96,7 @@ class BadgeOS_OpenBadgesIssuer {
 	 * @since  1.1.0
 	 */
 	function register_scripts_and_styles(){
-		wp_register_script( 'badgeos-backpack', $this->directory_url . '/js/badgeos-backpack.js', array( 'jquery' ), '1.1.0', true );
+		wp_register_script( 'badgeos-backpack', $this->directory_url . '/js/badgeos-backpack.js', array( 'jquery' ), '1.1.1', true );
 		wp_register_script( 'mozilla-issuer-api', '//backpack.openbadges.org/issuer.js', array('badgeos-backpack'), null );
 		wp_register_style( 'badgeos-backpack-style', $this->directory_url . '/css/badgeos-backpack.css', null, '1.1.0' );
 	}

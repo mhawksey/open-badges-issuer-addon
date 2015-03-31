@@ -12,7 +12,7 @@ class JSON_API_Badge_Controller {
 		$user_id = $uid[2];
 		$assertion = array();
 		if (isset($post_id)){
-			$base_url = site_url().'/'.get_option('json_api_base', 'api');
+			$base_url = home_url().'/'.get_option('json_api_base', 'api');
 			$submission = get_post($post_id);
 			$salt = "0ct3L";
 			$email = BadgeOS_OpenBadgesIssuer::registered_email($user_id);
@@ -47,7 +47,7 @@ class JSON_API_Badge_Controller {
 		global $json_api;
 		$post_id = $json_api->query->uid;
 		if (isset($post_id)){
-			$base_url = site_url().'/'.get_option('json_api_base', 'api');
+			$base_url = home_url().'/'.get_option('json_api_base', 'api');
 			$badge = get_post($post_id);
 			return array ( "name" => $badge->post_title,
   						   "description" => ($badge->post_content) ? html_entity_decode(strip_tags($badge->post_content), ENT_QUOTES, 'UTF-8') : "",
@@ -61,9 +61,10 @@ class JSON_API_Badge_Controller {
 							  'image',
 							  'email',
 							  'revocationList');
+							  
 		
-		$issuer = array("name" => get_option( 'badgeos_obi_issuer_org_name') ? '' : get_bloginfo( 'name', 'display' ),
-						"url" =>  get_option( 'badgeos_obi_issuer_org_url') ? '' : site_url());
+		$issuer = array("name" => ($org_name = get_option( 'badgeos_obi_issuer_org_name')) ? $org_name : get_bloginfo( 'name', 'display' ),
+						"url" =>  ($org_url = get_option( 'badgeos_obi_issuer_org_url')) ? $org_url : home_url());
 		
 		foreach($issuerFields as $field){
 			$val = get_option( 'badgeos_obi_issuer_org_'.$field);
