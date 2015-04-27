@@ -75,4 +75,86 @@ class JSON_API_Badge_Controller {
 		
 		return $issuer;
 	}
+	public function achievements() {
+		global $blog_id, $json_api;
+		
+		$type = badgeos_get_achievement_types_slugs();
+		// Drop steps from our list of "all" achievements
+		$step_key = array_search( 'step', $type );
+		if ( $step_key ){
+			unset( $type[$step_key] );
+		}
+		$type[] = 'submission';
+		
+		//$user_id = get_current_user_id();
+		// Get the current user if one wasn't specified
+		if( ! $user_id ){
+			if ($json_api->query->user_id){
+				$user_id = $json_api->query->user_id;
+			} else {
+				return array("message" => "No user_id"); 	
+			}
+		}
+		// Get submissions
+		$args = array(
+			'post_type'      =>	'submission',
+			'posts_per_page'   => -1,
+			'author' => $user_id,
+			'post_status'    => 'publish',
+			'fields' => 'ids'
+		);
+		$sub_arg = $args;
+		$submissions = get_posts($args);
+		$hidden = badgeos_get_hidden_achievement_ids( $type );
+	
+		// Initialize our output and counters
+		$achievements = array();
+		$achievement_count = 0;
+		
+		// Grab our earned badges (used to filter the query)
+		$earned_ids = badgeos_get_user_earned_achievement_ids( $user_id, $type );
+		$earned_ids = array_map('intval', $earned_ids);
+		// Query Achievements
+		$args = array(
+			'post_type'      =>	$type,
+			'posts_per_page' =>	-1,
+			'post_status'    => 'publish',
+		);
+		$args[ 'post__in' ] = array_merge( array( 0 ), $earned_ids);
+		
+		$exclude = array();
+		// exclude badges which are submissions
+		if ( !empty( $submissions ) ) {
+			foreach ($submissions as $sub_id){
+				$exclude[] = absint(get_post_meta( $sub_id, '_badgeos_submission_achievement_id', true ));
+				$args[ 'post__in' ][] = $sub_id;
+			}
+			$args[ 'post__in' ] = array_diff($args[ 'post__in' ], $exclude);
+		}
+		
+		// Loop Achievements
+		$achievement_posts = new WP_Query( $args );
+		$query_count += $achievement_posts->found_posts;
+		$base_url = site_url().'/'.get_option('json_api_base', 'api').'/badge/assertion/?uid=';
+		$pushed_badges = ( $pushed_items = get_user_meta( absint( $user_id ), '_badgeos_backpack_pushed' ) ) ? (array) $pushed_items : array();
+		while ( $achievement_posts->have_posts() ) : $achievement_posts->the_post();
+			$achievement_id = get_the_ID();
+			if (!in_array($achievement_id , $hidden)){
+				$uid = $achievement_id . "-" . get_post_time('U', true) . "-" . $user_id;
+				$button_text = (!in_array($base_url.$uid, $pushed_badges)) ? __( 'Send to Mozilla Backpack', 'badgeos_obi_issuer' ) : __( 'Resend to Mozilla Backpack', 'badgeos_obi_issuer' ); 
+				$badge_html = (get_post_type() === 'submission') ?  badgeos_render_achievement(get_post_meta( get_the_ID(), '_badgeos_submission_achievement_id', true )) : badgeos_render_achievement($achievement_id);
+				$badge_html .= '<div class="badgeos_backpack_action">';
+				$badge_html .= '<a href="" class="badgeos_backpack button" data-uid="'.$base_url.$uid.'">'.$button_text.'</a> ';
+				$badge_html .= '<input type="checkbox" value="'.$base_url.$uid.'" name="badgeos_backpack_issues[]" />';
+				$badge_html .= '</div>';
+				$achievements[] = array("uid" => $base_url.$uid,
+										"type" => get_post_type($achievement_id),
+										"data" => $badge_html);
+				$achievement_count++;
+			}
+		endwhile;
+		
+		return array ( "achievements" => $achievements,
+					   "count" => $achievement_count);
+	}
 }

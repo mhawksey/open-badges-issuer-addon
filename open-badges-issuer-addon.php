@@ -72,7 +72,7 @@ class BadgeOS_OpenBadgesIssuer {
 	 * @since 1.0.0
 	 */
 	public function includes() {
-
+		$this->maybe_disable_plugin();
 		// If BadgeOS is available...
 		if ( $this->meets_requirements() ) {
 			// add custom JSON API controllers

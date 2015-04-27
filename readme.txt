@@ -2,7 +2,7 @@
 Contributors: mhawksey
 Tags: badge, badges, openbadges, credly, OBI, mozilla, open badges, achievement, badgeOS
 Requires at least: 3.5
-Tested up to: 3.9.1
+Tested up to: 4.2.1
 Stable tag: 1.1.0
 License: GNU AGPLv3
 License URI: http://www.gnu.org/licenses/agpl-3.0.html
