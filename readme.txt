@@ -2,8 +2,8 @@
 Contributors: mhawksey
 Tags: badge, badges, openbadges, credly, OBI, mozilla, open badges, achievement, badgeOS
 Requires at least: 3.5
-Tested up to: 4.2.1
-Stable tag: 1.1.0
+Tested up to: 4.3.0
+Stable tag: 1.1.1
 License: GNU AGPLv3
 License URI: http://www.gnu.org/licenses/agpl-3.0.html
 
@@ -44,6 +44,9 @@ This plugin was developed using the [BadgeOS Boilerplate Add-On](https://github.
 
 
 == Changelog ==
+
+= 1.1.1 =
+* option to not include the plugin css
 
 = 1.1.0 =
 * Integrated 'send to backpack' in all badge listings where user has achieved award

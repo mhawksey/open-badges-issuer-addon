@@ -145,6 +145,7 @@ class BadgeOS_OpenBadgesIssuer_Settings {
 	
 	function save() {
 		register_setting('badgeos_obi_issuer_settings', 'badgeos_obi_issuer_public_evidence');
+		register_setting('badgeos_obi_issuer_settings', 'badgeos_obi_issuer_css_bypass');
 		register_setting('badgeos_obi_issuer_settings', 'badgeos_obi_issuer_alt_email');
 		register_setting('badgeos_obi_issuer_settings', 'badgeos_obi_issuer_org_name');
 		register_setting('badgeos_obi_issuer_settings', 'badgeos_obi_issuer_org_url');
@@ -192,6 +193,19 @@ class BadgeOS_OpenBadgesIssuer_Settings {
 					'choices' => array( 'true' => 'Enable',
 										'false' => 'Disable'),
 					'description' => __('Enable or Disable public badge evidence for submissions', 'badgeos_obi_issuer'),
+			)
+		);
+		
+		add_settings_field(
+			'badgeos_obi_issuer_css_bypass', 
+			__('Plugin CSS', 'badgeos_obi_issuer'), 
+			array(&$this, 'settings_field_input_radio'), 
+			'badgeos_obi_issuer_template', 
+			'badgeos_obi_issuer_template-section',
+			array(  'name' => 'badgeos_obi_issuer_css_bypass',
+					'choices' => array( 'true' => 'Enable',
+										'false' => 'Disable'),
+					'description' => __('Enable or Disable plugin CSS styling', 'badgeos_obi_issuer'),
 			)
 		);
 		

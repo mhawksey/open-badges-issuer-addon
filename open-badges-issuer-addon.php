@@ -3,7 +3,7 @@
  * Plugin Name: Open Badges Issuer Add-on
  * Description: This is a BadgeOS add-on which allows you to host Mozilla Open Badges compatible assertions and allow users to push awarded badges directly to their Mozilla  Backpack
  * Author: mhawksey
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author URI: https://mashe.hawksey.info/
  * Plugin URI: http://wordpress.org/plugins/badgeos-open-badges-issuer-add-on/
  * Based on BadgeOS Boilerplate Add-On by Credly https://github.com/opencredit/BadgeOS-Boilerplate-Add-on
@@ -162,7 +162,9 @@ class BadgeOS_OpenBadgesIssuer {
 	function frontend_scripts() {
 		wp_enqueue_script( 'mozilla-issuer-api' );
 		wp_enqueue_script( 'badgeos-backpack' );
-		wp_enqueue_style( 'badgeos-backpack-style' );
+		if (get_option('badgeos_obi_issuer_css_bypass') == "true"){
+			wp_enqueue_style( 'badgeos-backpack-style' );
+		}
 	}
 	
 	/**
