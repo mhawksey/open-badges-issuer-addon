@@ -3,7 +3,7 @@
  * Plugin Name: Open Badges Issuer Add-on
  * Description: This is a BadgeOS add-on which allows you to host Mozilla Open Badges compatible assertions and allow users to push awarded badges directly to their Mozilla  Backpack
  * Author: mhawksey
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author URI: https://mashe.hawksey.info/
  * Plugin URI: http://wordpress.org/plugins/badgeos-open-badges-issuer-add-on/
  * Based on BadgeOS Boilerplate Add-On by Credly https://github.com/opencredit/BadgeOS-Boilerplate-Add-on
@@ -97,7 +97,7 @@ class BadgeOS_OpenBadgesIssuer {
 	 */
 	function register_scripts_and_styles(){
 		wp_register_script( 'badgeos-backpack', $this->directory_url . '/js/badgeos-backpack.js', array( 'jquery' ), '1.1.1', true );
-		wp_register_script( 'mozilla-issuer-api', '//backpack.openbadges.org/issuer.js', array('badgeos-backpack'), null );
+		wp_register_script( 'mozilla-issuer-api', 'https://backpack.openbadges.org/issuer.js', array('badgeos-backpack'), null );
 		wp_register_style( 'badgeos-backpack-style', $this->directory_url . '/css/badgeos-backpack.css', null, '1.1.0' );
 	}
 	
@@ -308,8 +308,8 @@ class BadgeOS_OpenBadgesIssuer {
 	
 	public function registered_email($user_id = 0){
 		$user_id = ($user_id) ? $user_id : get_current_user_id();
-		$email_alt_field = get_option( 'badgeos_obi_issuer_alt_email');
-		if ($email_alt_field !== "" && get_user_meta( $user_id, $email_alt_field, TRUE) !== ""){
+		$email_alt_field = get_option( 'badgeos_obi_issuer_alt_email', FALSE);
+		if (($email_alt_field || $email_alt_field !== "") && get_user_meta( $user_id, $email_alt_field, TRUE) !== ""){
 			return get_user_meta( $user_id, $email_alt_field, TRUE);
 		} else {
 			$user = get_userdata( $user_id );

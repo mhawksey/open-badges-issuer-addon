@@ -14,7 +14,7 @@ class JSON_API_Badge_Controller {
 		if (isset($post_id)){
 			$base_url = home_url().'/'.get_option('json_api_base', 'api');
 			$submission = get_post($post_id);
-			$salt = "0ct3L";
+			$salt = wp_salt( 'nonce' );
 			$email = BadgeOS_OpenBadgesIssuer::registered_email($user_id);
 			$post_type = get_post_type( $post_id );
 			

@@ -3,7 +3,7 @@ Contributors: mhawksey
 Tags: badge, badges, openbadges, credly, OBI, mozilla, open badges, achievement, badgeOS
 Requires at least: 3.5
 Tested up to: 4.3.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GNU AGPLv3
 License URI: http://www.gnu.org/licenses/agpl-3.0.html
 
@@ -44,6 +44,11 @@ This plugin was developed using the [BadgeOS Boilerplate Add-On](https://github.
 
 
 == Changelog ==
+
+= 1.1.2 =
+* fixed issue with sending badges to Backpage from http sites
+* stronger salt to obscure recipient email
+
 
 = 1.1.1 =
 * option to not include the plugin css
